@@ -17,12 +17,12 @@ namespace Azure.SpeechToText
         private static void  MenuList()
         {
             Console.WriteLine("Please Enter Your Choice\n");
-            Console.Write(" 1.Speech To Text \n 2.Text To Spech\n 3.Quit\n");
+            Console.Write(" 1.Speech To Text \n 2.Text To Speech\n 3.Quit\n");
             string input = Console.ReadLine();
             switch (input)
             {
                 case "1":
-                    Console.Write("You have netered : " + input + "\nPlease wait...");
+                    Console.Write("You have entered : " + input + "\nPlease wait...");
                     SpeechToTextRest();
                     break;
                 case "2":
@@ -32,6 +32,7 @@ namespace Azure.SpeechToText
                     Console.Write("Invalid Input");
                     break;
             }
+
 
         }
 
@@ -61,44 +62,77 @@ namespace Azure.SpeechToText
             //Recognition mode:1.interactive 2.conversation 3.dictation
             //Language :en-US
             //Output format :1.Default 2. Detailed 3.Simple
-            var srService = new SpeechToTextService("interactive","en-US","Simple");
-            srService.SendAudio( Constants.AUDIO_DIRECTORY + "speechToText1.wav");
+            var srService = new SpeechToTextService("interactive","en-IN","Simple");
+            srService.SendAudio( Constants.AUDIO_DIRECTORY + "speechToText12.wav");
         }
 
         private static void TextToSpeech()
         {
             try
             {
-                // Create the service
-                Console.WriteLine("Creating the Text to Speech Service.");
-                var srService = new TextToSpeechService(Constants.Speech_API_Key);
-                srService.OnAudioAvailable += PlayAudio;
-                srService.OnError += ErrorHandler;
-                Console.WriteLine("Done");
-                Console.WriteLine("");
+                // Create the service                
+                Console.WriteLine("press y for continue or n ");
+                string yn= Console.ReadLine();
 
-                Console.WriteLine("Generating the Authentication Token.");
-
-                Authorization auth = new Authorization(Constants.Speech_API_Key);
-                var authToken = auth.GetAuthorizationTokenAsync().Result;               
-                Console.WriteLine("Token: {0}\n", authToken);
-                Console.WriteLine("Done");
-                Console.WriteLine("");
-
-                Console.WriteLine("Speaking");
-                var inputOptions = new InputOptions()
+                while (yn.ToLower()!="n")
                 {
-                    RequestUri = new Uri(Constants.BASE_URI+ "synthesize"),
-                    Text = "Hi this is Krishna from Finomial Technology pvt. Ltd., I hope you like my demo",
-                    Locale = "en-US",
-                    VoiceName = "Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)",
-                    OutputFormat = AudioOutputFormat.Riff16Khz16BitMonoPcm,
-                    AuthorizationToken = "Bearer " + authToken,
-                };
-                Console.WriteLine(inputOptions.Text);
-                srService.Speak(CancellationToken.None, inputOptions).Wait();
-                Console.WriteLine("Done");
-                Console.WriteLine("");
+                    Console.WriteLine("Creating service...");
+                    var srService = new TextToSpeechService(Constants.Speech_API_Key);
+                    srService.OnAudioAvailable += PlayAudio;
+                    srService.OnError += ErrorHandler;
+                    Console.WriteLine("Done");
+                    Console.WriteLine("");
+
+                    Console.WriteLine("Generating the Authentication Token.");
+
+                    Authorization auth = new Authorization(Constants.Speech_API_Key);
+                    var authToken = auth.GetAuthorizationTokenAsync().Result;
+                    //Console.WriteLine("Token: {0}\n", authToken);
+                    Console.WriteLine("Authentication Done");
+                    Console.WriteLine("");
+                    Console.WriteLine("Enter Text to Speech\n");
+                    string text = Console.ReadLine();
+
+                    Console.WriteLine("Select voice font\n");
+                    Console.Write(" 1.en-IN Priya \n 2.en-In Ravi \n 3.default :en-US ZiraUS\n");
+                    string input = Console.ReadLine();
+                    string voice, locale = "en-IN";
+                    switch (input)
+                    {
+                        case "1":
+                            voice = "Microsoft Server Speech Text to Speech Voice (en-IN, PriyaRUS)";
+                            break;
+                        case "2":
+                            voice = "Microsoft Server Speech Text to Speech Voice (en-IN, Ravi, Apollo)";
+                            break;
+                        default:
+                            voice = "Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)";
+                            locale = "en-US";
+                            break;
+                    }
+
+                    //voice output support
+                    //https://docs.microsoft.com/en-us/azure/cognitive-services/Speech/API-Reference-REST/BingVoiceOutput#main
+
+                    Console.WriteLine("Speaking");
+                    var inputOptions = new InputOptions()
+                    {
+                        RequestUri = new Uri(Constants.BASE_URI + "synthesize"),
+                        Text = text,
+                        Locale = locale,
+                        VoiceName = voice,
+                        OutputFormat = AudioOutputFormat.Riff16Khz16BitMonoPcm,
+                        AuthorizationToken = "Bearer " + authToken,
+                    };
+                    Console.WriteLine(inputOptions.Text);
+                    srService.Speak(CancellationToken.None, inputOptions).Wait();
+                    Console.WriteLine("Done");
+                    Console.WriteLine("");
+                    Console.WriteLine("want to continue\ny or n ");
+                    yn = Console.ReadLine();
+                }
+
+              
             }
             catch (Exception ex)
             {

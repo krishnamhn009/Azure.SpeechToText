@@ -18,7 +18,7 @@ namespace Azure.SpeechToText
         /// <param name="subscriptionKey"></param>
         public SpeechToTextService(SpeechRecognitionMode mode, string language, string subscriptionKey)
         {
-            serviceClient = SpeechRecognitionServiceFactory.CreateDataClient(mode, language, subscriptionKey);
+            serviceClient = SpeechRecognitionServiceFactory.CreateDataClient(mode, language, subscriptionKey);          
             // Event handlers for speech recognition results
             serviceClient.OnResponseReceived += this.OnResponseReceivedHandler;
             serviceClient.OnPartialResponseReceived += this.OnPartialResponseReceivedHandler;
@@ -41,7 +41,7 @@ namespace Azure.SpeechToText
             {
                 Authorization auth = new Authorization(Constants.Speech_API_Key);
                 var token = auth.GetAuthorizationTokenAsync().Result;
-                Console.WriteLine("Token: {0}\n", token);
+                //Console.WriteLine("Token: {0}\n", token);
                 Console.WriteLine("Request Uri: " + RequestURI + Environment.NewLine);
 
                 HttpWebRequest request = null;

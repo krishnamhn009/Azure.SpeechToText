@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="audio\speechToText1.wav" />
+    <Content Include="audio\speechToText12.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
